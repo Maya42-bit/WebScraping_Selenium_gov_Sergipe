@@ -21,31 +21,36 @@ driver = webdriver.Chrome(service=service, options=options)
 
 url = 'https://www.transparencia.se.gov.br/Pessoal/ServidoresPorOrgao.xhtml?orgao=ITPS'
 driver.get(url)
-wait = WebDriverWait(driver, 900)
+wait = WebDriverWait(driver, 1200)
 
-
-### Seletores das combobox
 print("Fazendo Web Scraping em https://www.transparencia.se.gov.br\n")
-ano = input("Ano da busca: ")
-mes = input("Mês de Busca (Janeiro, Fevereiro ...): ")
 
 dinovu = ''
-repete =0
+repete = 'y'
 
-while repete == 0:
+while repete == 'y':
+    
+    ### Seletores das combobox
+    ano = input("Ano da busca: ")
+    mes = input("Mês de Busca (Janeiro, Fevereiro ...): ")
 
-    #Selecionando o Ano
+    ##Selecionando o Ano
 
     combobox_Ano = driver.find_element(by=By.XPATH, value='//*[@id="frmPrincipal:ano_input"]')
     select_ano = Select(combobox_Ano)
     select_ano.select_by_visible_text(str(ano))
 
-    #selecionando o Mês 
+    #Espera para da tela de carregamento
+    wait.until(EC.invisibility_of_element_located((By.XPATH, '//*[@id="j_idt55:j_idt58_modal"]')))
+
+    ##selecionando o Mês 
 
     combobox_Mes = driver.find_element(by=By.XPATH, value='//*[@id="frmPrincipal:mes_input"]')
     select_mes = Select(combobox_Mes)
     select_mes.select_by_visible_text(mes)
 
+    #Espera para da tela de carregamento
+    wait.until(EC.invisibility_of_element_located((By.XPATH, '//*[@id="j_idt55:j_idt58_modal"]')))
 
     #selecionando o Ano
     x = driver.find_elements(by=By.XPATH, value='//*[@id="frmPrincipal:selOrgao_panel"]/div[2]/ul/li')
@@ -53,7 +58,7 @@ while repete == 0:
     time.sleep(1.2)
 
         #Interando sob os Orgãos
-    for i in tqdm(range(qtd_orgaos+1), desc="Senta e Mofa :v"):
+    for i in tqdm(range(qtd_orgaos), desc="Senta e Mofa [:v]"):
         
         combobox_Orgao = driver.find_elements(by=By.CLASS_NAME, value="ui-selectonemenu-label")[2]
         combobox_Orgao.click()
@@ -68,7 +73,8 @@ while repete == 0:
 
         pesquisa_button = driver.find_element(by=By.XPATH, value='//*[@id="frmPrincipal:botaoPesquisar"]')
         pesquisa_button.click()
-                    
+        
+        #Espera para da tela de carregamento
         wait.until(EC.invisibility_of_element_located((By.XPATH, '//*[@id="j_idt55:j_idt58_modal"]')))
 
         pesquisa_button = driver.find_element(by=By.XPATH, value='//*[@id="frmPrincipal:j_idt182"]')
@@ -78,15 +84,16 @@ while repete == 0:
     dinovu = input("fazer o processo para outro Ano ou Mês (y/n)?: ")
     if dinovu=="n":
         break
+    else: repete = dinovu
 
 if dinovu == "n":
-    resp = input("Deseja unir os arquivos (y/n)?")
+    resp = input("Deseja unir os arquivos (y/n)\n?")
     
     diretorio = input("Diretório dos arquivos baixados (com 2x \): ")
-    nome_arquivo_destino = input("Nome do arquivo de destino: ")
+    nome_arquivo_destino = input("Nome do arquivo de destino (.csv): ")
     sep_destino = input("Separador do arquivo de destino: ")
         
     #União de arquivos no diretório
 
     uniao = unir_arquivos(diretorio_arq=diretorio, sep_arq=',' ,nome_destino=nome_arquivo_destino, sep_destino= sep_destino)
-    print(f"salvo em {uniao}")
+    print(f"salvo em {uniao} chefia. TMJ!")
