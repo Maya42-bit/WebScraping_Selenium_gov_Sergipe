@@ -29,10 +29,11 @@ dinovu = ''
 repete = 'y'
 
 while repete == 'y':
-    
+
     ### Seletores das combobox
     ano = input("Ano da busca: ")
     mes = input("Mês de Busca (Janeiro, Fevereiro ...): ")
+    print("\n")
 
     ##Selecionando o Ano
 
@@ -58,7 +59,7 @@ while repete == 'y':
     time.sleep(1.2)
 
         #Interando sob os Orgãos
-    for i in tqdm(range(qtd_orgaos), desc="Senta e Mofa [:v]"):
+    for i in tqdm(range(qtd_orgaos), desc="Senta e Mofa |:v|"):
         
         combobox_Orgao = driver.find_elements(by=By.CLASS_NAME, value="ui-selectonemenu-label")[2]
         combobox_Orgao.click()
@@ -81,19 +82,20 @@ while repete == 'y':
         pesquisa_button.click()
         time.sleep(1)
 
+    resp = input("Deseja unir os arquivos (y/n)?: ")
+    if resp == 'y':
+        diretorio = input("Diretório dos arquivos baixados (com 2x \): ")
+        nome_arquivo_destino = input("Nome do arquivo de destino (.csv): ")
+        sep_destino = input("Separador do arquivo de destino: ")
+            
+        #União de arquivos no diretório
+
+        uniao = unir_arquivos(diretorio_arq=diretorio, sep_arq=',' ,nome_destino=nome_arquivo_destino, sep_destino= sep_destino)
+        print(f"salvo em {uniao} chefia. TMJ!")
+        print('\n')
+
+
     dinovu = input("fazer o processo para outro Ano ou Mês (y/n)?: ")
     if dinovu=="n":
         break
     else: repete = dinovu
-
-if dinovu == "n":
-    resp = input("Deseja unir os arquivos (y/n)\n?")
-    
-    diretorio = input("Diretório dos arquivos baixados (com 2x \): ")
-    nome_arquivo_destino = input("Nome do arquivo de destino (.csv): ")
-    sep_destino = input("Separador do arquivo de destino: ")
-        
-    #União de arquivos no diretório
-
-    uniao = unir_arquivos(diretorio_arq=diretorio, sep_arq=',' ,nome_destino=nome_arquivo_destino, sep_destino= sep_destino)
-    print(f"salvo em {uniao} chefia. TMJ!")
